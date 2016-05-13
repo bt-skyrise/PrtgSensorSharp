@@ -52,11 +52,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CapturedConsoleOutput.cs" />
+    <Compile Include="MultilineStringAssertions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PrtgExeScriptAdvancedSensorTests.cs" />
+    <Compile Include="PrtgReportTests.cs" />
+    <Compile Include="PrtgResultTests.cs" />
+    <Compile Include="PrtgTextTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PrtgExeScriptSensor\PrtgExeScriptSensor.csproj">
+      <Project>{4a72c0ab-4421-44ae-bd09-c799ef821e64}</Project>
+      <Name>PrtgExeScriptSensor</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
