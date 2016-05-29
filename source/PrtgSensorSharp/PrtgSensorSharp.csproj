@@ -7,8 +7,8 @@
     <ProjectGuid>{4A72C0AB-4421-44AE-BD09-C799EF821E64}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PrtgExeScriptSensor</RootNamespace>
-    <AssemblyName>PrtgExeScriptSensor</AssemblyName>
+    <RootNamespace>PrtgSensorSharp</RootNamespace>
+    <AssemblyName>PrtgSensorSharp</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

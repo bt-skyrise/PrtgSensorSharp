@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Linq;
 
-namespace PrtgExeScriptSensor
+namespace PrtgSensorSharp
 {
     public static class PrtgExeScriptAdvanced
     {

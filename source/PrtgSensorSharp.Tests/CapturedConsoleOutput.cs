@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace PrtgExeScriptSensor.Tests
+namespace PrtgSensorSharp.Tests
 {
     public class CapturedConsoleOutput : IDisposable
     {

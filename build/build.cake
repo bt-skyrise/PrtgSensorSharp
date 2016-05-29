@@ -3,14 +3,14 @@
 Task("Restore-NuGet-Packages")
     .Does(() =>
     {
-        NuGetRestore("../PrtgExeScriptSensor/PrtgExeScriptSensor.sln");
+        NuGetRestore("../source/PrtgSensorSharp.sln");
     });
 
 Task("Clean")
     .Does(() =>
     {
-        CleanDirectories("../PrtgExeScriptSensor/**/bin");
-        CleanDirectories("../PrtgExeScriptSensor/**/obj");
+        CleanDirectories("../source/**/bin");
+        CleanDirectories("../source/**/obj");
     });
 
 Task("Build")
@@ -18,7 +18,7 @@ Task("Build")
     .IsDependentOn("Clean")
     .Does(() =>
     {
-        MSBuild("../PrtgExeScriptSensor/PrtgExeScriptSensor.sln", new MSBuildSettings
+        MSBuild("../source/PrtgSensorSharp.sln", new MSBuildSettings
         {
             Configuration = "Release",
             Verbosity = Verbosity.Quiet
@@ -29,7 +29,7 @@ Task("Run-Unit-Tests")
     .IsDependentOn("Build")
     .Does(() =>
     {
-        NUnit3("../PrtgExeScriptSensor/PrtgExeScriptSensor.Tests/bin/Release/PrtgExeScriptSensor.Tests.dll");
+        NUnit3("../source/PrtgSensorSharp.Tests/bin/Release/PrtgSensorSharp.Tests.dll");
     });
 
 // todo: push nuget package

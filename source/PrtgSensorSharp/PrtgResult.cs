@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Xml.Linq;
 
-namespace PrtgExeScriptSensor
+namespace PrtgSensorSharp
 {
     public class PrtgResult
     {

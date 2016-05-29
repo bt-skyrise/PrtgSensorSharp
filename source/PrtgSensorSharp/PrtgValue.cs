@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Xml.Linq;
 
-namespace PrtgExeScriptSensor
+namespace PrtgSensorSharp
 {
     public class PrtgValue
     {

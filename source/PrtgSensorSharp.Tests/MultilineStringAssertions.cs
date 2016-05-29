@@ -2,7 +2,7 @@
 using FluentAssertions;
 using FluentAssertions.Primitives;
 
-namespace PrtgExeScriptSensor.Tests
+namespace PrtgSensorSharp.Tests
 {
     public static class MultilineStringAssertions
     {

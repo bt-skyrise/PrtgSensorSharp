@@ -1,4 +1,4 @@
-﻿namespace PrtgExeScriptSensor
+﻿namespace PrtgSensorSharp
 {
     public static class PrtgUnit
     {

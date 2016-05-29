@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 
-namespace PrtgExeScriptSensor.Tests
+namespace PrtgSensorSharp.Tests
 {
     public class PrtgResultTests
     {
