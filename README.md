@@ -1,5 +1,7 @@
 # PrtgSensorSharp
 
+[![Build status](https://ci.appveyor.com/api/projects/status/4h7gqlqpschi7g5c?svg=true)](https://ci.appveyor.com/project/redss/prtgsensorsharp)
+
 _Work in progress_
 
 The goal of this project is to facilitate creation of custom PRTG sensors,
