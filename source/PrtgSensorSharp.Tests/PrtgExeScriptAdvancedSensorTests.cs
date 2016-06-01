@@ -42,12 +42,10 @@ namespace PrtgSensorSharp.Tests
                     throw new Exception("welp!");
                 });
 
-                // todo: should it print the error message, or just inform about the error?
-
                 consoleOutput.ReadAll().Should().Match(
                     "<prtg>" +
                         "<error>1</error>" +
-                        "<text>*System.Exception*welp!*</text>" +
+                        "<text>Sensor has failed - unhandled exception was thrown.</text>" +
                     "</prtg>"
                 );
             }

@@ -9,24 +9,26 @@ namespace PrtgSensorSharp
         XElement Serialize();
     }
 
-    public class PrtgReport
+    public static class PrtgReport
     {
         public static IPrtgReport Successful(PrtgText message, IEnumerable<PrtgResult> results) =>
-            new PrtgSuccessfulReport(message, results);
+            new PrtgSuccess(message, results);
 
         public static IPrtgReport Successful(IEnumerable<PrtgResult> results) =>
-            new PrtgSuccessfulReport(PrtgText.None, results);
+            new PrtgSuccess(PrtgText.Default, results);
 
         public static IPrtgReport Failed(PrtgText message) =>
-            new PrtgFailedReport(message);
+            new PrtgFailure(message);
     }
 
-    public class PrtgSuccessfulReport : IPrtgReport
+    public class PrtgSuccess : IPrtgReport
     {
+        // todo: channel names should be unique
+
         private readonly IPrtgText _text;
         private readonly IEnumerable<PrtgResult> _results;
 
-        public PrtgSuccessfulReport(IPrtgText text, IEnumerable<PrtgResult> results)
+        public PrtgSuccess(IPrtgText text, IEnumerable<PrtgResult> results)
         {
             _text = text;
             _results = results;
@@ -38,11 +40,11 @@ namespace PrtgSensorSharp
         );
     }
 
-    public class PrtgFailedReport : IPrtgReport
+    public class PrtgFailure : IPrtgReport
     {
         private readonly IPrtgText _text;
 
-        public PrtgFailedReport(IPrtgText text)
+        public PrtgFailure(IPrtgText text)
         {
             _text = text;
         }

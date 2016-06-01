@@ -14,15 +14,15 @@ namespace PrtgSensorSharp
             Console.Write(serializedReport);
         }
 
-        public static IPrtgReport GenerateReport(Func<IPrtgReport> probe)
+        private static IPrtgReport GenerateReport(Func<IPrtgReport> probe)
         {
             try
             {
                 return probe();
             }
-            catch (Exception exception)
+            catch (Exception)
             {
-                return PrtgReport.Failed(exception.ToString());
+                return PrtgReport.Failed("Sensor has failed - unhandled exception was thrown.");
             }
         }
     }

@@ -11,7 +11,7 @@ namespace PrtgSensorSharp
     {
         public static implicit operator PrtgText(string message) => new PrtgText(message);
 
-        public static IPrtgText None => new PrtgDefaultText();
+        public static IPrtgText Default => new PrtgDefaultText();
 
         private readonly string _message;
 

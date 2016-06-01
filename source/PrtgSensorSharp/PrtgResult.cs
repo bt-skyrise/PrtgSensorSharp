@@ -1,29 +1,24 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Xml.Linq;
 
 namespace PrtgSensorSharp
 {
     public class PrtgResult
     {
-        private readonly PrtgChannel _channel;
+        private readonly string _channelName;
         private readonly PrtgValue _value;
         private readonly PrtgOptionalChannelProperty[] _optionalProperties;
         
-        public PrtgResult(PrtgChannel channel, PrtgValue value,
-            params PrtgOptionalChannelProperty[] optionalProperties)
+        public PrtgResult(string channel, PrtgValue value, params PrtgOptionalChannelProperty[] optionalProperties)
         {
-            _optionalProperties = optionalProperties;
-            _channel = channel;
+            _channelName = channel;
             _value = value;
+            _optionalProperties = optionalProperties;
         }
 
         public XElement Serialize() => new XElement("result",
-            _channel.Serialize(),
+            new XElement("channel", _channelName),
             _value.Serialize(),
-            SerializeOptionalProperties());
-
-        private IEnumerable<XElement> SerializeOptionalProperties() => _optionalProperties
-            .Select(property => property.Serialize());
+            _optionalProperties.Select(property => property.Serialize()));
     }
 }
