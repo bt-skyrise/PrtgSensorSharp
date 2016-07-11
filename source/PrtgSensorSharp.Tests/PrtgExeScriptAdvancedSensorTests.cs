@@ -42,7 +42,7 @@ namespace PrtgSensorSharp.Tests
                     throw new Exception("welp!");
                 });
 
-                consoleOutput.ReadAll().Should().Match(
+                consoleOutput.ReadAll().Should().Be(
                     "<prtg>" +
                         "<error>1</error>" +
                         "<text>Sensor has failed - unhandled exception was thrown.</text>" +
