@@ -8,6 +8,8 @@ namespace PrtgSensorSharp
         private readonly string _channelName;
         private readonly PrtgValue _value;
         private readonly PrtgOptionalChannelProperty[] _optionalProperties;
+
+        // todo: optional properties should be unique
         
         public PrtgResult(string channel, PrtgValue value, params PrtgOptionalChannelProperty[] optionalProperties)
         {
