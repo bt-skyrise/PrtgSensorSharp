@@ -1,4 +1,6 @@
-﻿using System.Xml.Linq;
+﻿using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Xml.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -38,6 +40,33 @@ namespace PrtgSensorSharp.Tests
             report.Serialize()
                 .Should().HaveElement("text")
                 .Which.Should().HaveValue("it works");
+        }
+
+
+        [Test]
+        public void report_must_have_unique_channels()
+        {
+            var report = PrtgReport.Successful(new[]
+            {
+                new PrtgResult("First channel", 10),
+                new PrtgResult("First channel", 1.5f),
+                new PrtgResult("Second channel", 1)
+            });
+
+            report.Serialize().Should().BeEquivalentTo(new XElement("prtg",
+                new XElement("error", "1"),
+                new XElement("text", "Duplicate channels: First channel")
+            ));
+        }
+
+        [Test]
+        public void report_can_handle_empty_PrtgResults()
+        {
+            var report = PrtgReport.Successful(new List<PrtgResult>());
+
+            report.Serialize()
+                .Should().HaveElement("text")
+                .Which.Should().HaveValue("No channels");
         }
 
         [Test]

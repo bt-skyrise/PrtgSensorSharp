@@ -50,5 +50,43 @@ namespace PrtgSensorSharp.Tests
                 );
             }
         }
+
+        [Test]
+        public void can_print_exception_message()
+        {
+            using (var consoleOutput = CapturedConsoleOutput.StartCapturing())
+            {
+                PrtgExeScriptAdvanced.Run(() =>
+                {
+                    throw new Exception("welp!");
+                }, true);
+
+                consoleOutput.ReadAll().Should().Be(
+                    "<prtg>" +
+                        "<error>1</error>" +
+                        "<text>Sensor has failed - An exception was thrown: welp!</text>" +
+                    "</prtg>"
+                );
+            }
+        }
+
+        [Test]
+        public void can_handle_AggregateException()
+        {
+            using (var consoleOutput = CapturedConsoleOutput.StartCapturing())
+            {
+                PrtgExeScriptAdvanced.Run(() =>
+                {
+                    throw new AggregateException(new Exception("Exception1"), new Exception("Exception2"));
+                }, true);
+
+                consoleOutput.ReadAll().Should().Be(
+                    "<prtg>" +
+                        "<error>1</error>" +
+                        "<text>Sensor has failed - An aggregate exception 'One or more errors occurred.' with following inner exceptions was thrown: Exception1; Exception2; </text>" +
+                    "</prtg>"
+                );
+            }
+        }
     }
 }
