@@ -5,19 +5,20 @@ namespace PrtgSensorSharp
 {
     public class PrtgResult
     {
-        private readonly string _channelName;
+        public string ChannelName { get; }
+
         private readonly PrtgValue _value;
         private readonly PrtgOptionalChannelProperty[] _optionalProperties;
         
         public PrtgResult(string channel, PrtgValue value, params PrtgOptionalChannelProperty[] optionalProperties)
         {
-            _channelName = channel;
+            ChannelName = channel;
             _value = value;
             _optionalProperties = optionalProperties;
         }
 
         public XElement Serialize() => new XElement("result",
-            new XElement("channel", _channelName),
+            new XElement("channel", ChannelName),
             _value.Serialize(),
             _optionalProperties.Select(property => property.Serialize()));
     }

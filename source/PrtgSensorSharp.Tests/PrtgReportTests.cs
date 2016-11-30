@@ -50,17 +50,18 @@ namespace PrtgSensorSharp.Tests
             {
                 new PrtgResult("First channel", 10),
                 new PrtgResult("First channel", 1.5f),
-                new PrtgResult("Second channel", 1)
+                new PrtgResult("Second channel", 1),
+                new PrtgResult("Second channel", 12)
             });
 
             report.Serialize().Should().BeEquivalentTo(new XElement("prtg",
                 new XElement("error", "1"),
-                new XElement("text", "Duplicate channels: First channel")
+                new XElement("text", "Duplicate channels: First channel, Second channel")
             ));
         }
 
         [Test]
-        public void report_can_handle_empty_PrtgResults()
+        public void report_can_have_no_channels()
         {
             var report = PrtgReport.Successful(new List<PrtgResult>());
 

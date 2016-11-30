@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Xml.Linq;
 
 namespace PrtgSensorSharp
@@ -17,7 +18,12 @@ namespace PrtgSensorSharp
         public static IPrtgReport Successful(IEnumerable<PrtgResult> results)
         {
             var resultsList = results.ToList();
-            return resultsList.Any() ? new PrtgSuccess(PrtgText.Default, resultsList) : new PrtgSuccess(new PrtgText("No channels"), resultsList);
+
+            var successMessage = resultsList.Any()
+                ? PrtgText.Default
+                : new PrtgText("No channels");
+
+            return new PrtgSuccess(successMessage, resultsList);
         }
 
         public static IPrtgReport Failed(PrtgText message) =>
@@ -41,27 +47,24 @@ namespace PrtgSensorSharp
 
             if (duplicates.Any())
             {
+                var joinedDuplicates = string.Join(", ", duplicates);
+
                 return PrtgReport
-                    .Failed(new PrtgText($"Duplicate channels: {string.Join(", ", duplicates)}"))
+                    .Failed(new PrtgText($"Duplicate channels: {joinedDuplicates}"))
                     .Serialize();
             }
 
             return new XElement("prtg",
-            _results.Select(result => result.Serialize()),
-            _text.Serialize()
-        );
+                _results.Select(result => result.Serialize()),
+                _text.Serialize()
+            );
         }
 
         private List<string> GetDuplicateChannels() => _results
-            .GroupBy(FindChannelTag)
-            .Where(g => g.Count() > 1)
-            .Select(y => y.Key)
+            .GroupBy(result => result.ChannelName)
+            .Where(resultGroup => resultGroup.Count() > 1)
+            .Select(resultGroup => resultGroup.Key)
             .ToList();
-
-        private static string FindChannelTag(PrtgResult x) => x.Serialize()
-            .DescendantsAndSelf()
-            .First(xElement => xElement.Name.ToString() == "channel")
-            .Value;
     }
 
     public class PrtgFailure : IPrtgReport

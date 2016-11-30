@@ -6,46 +6,42 @@ namespace PrtgSensorSharp
 {
     public static class PrtgExeScriptAdvanced
     {
-        public static void Run(Func<IPrtgReport> probe, bool printExceptionDetails = false)
+        public static void Run(Func<IPrtgReport> probe)
         {
-            var report = GenerateReport(probe, printExceptionDetails);
+            var report = GenerateReport(probe);
 
             var serializedReport = report.Serialize().ToString(SaveOptions.DisableFormatting);
 
             Console.Write(serializedReport);
         }
 
-        private static IPrtgReport GenerateReport(Func<IPrtgReport> probe, bool printExceptionDetails)
+        private static IPrtgReport GenerateReport(Func<IPrtgReport> probe)
         {
             try
             {
                 return probe();
             }
-            catch (Exception e)
+            catch (AggregateException exception)
             {
-                return printExceptionDetails
-                    ? GenerateReportFromExceptionMessage(e)
-                    : PrtgReport.Failed("Sensor has failed - unhandled exception was thrown.");
+                var innerExceptionsMessages = ExtractInnerExceptionsMessages(exception);
+
+                return PrtgReport.Failed($"Sensor has failed - an aggregate exception '{exception.Message}' " +
+                                         $"with following inner exceptions was thrown: {innerExceptionsMessages}");
+            }
+            catch (Exception exception)
+            {
+                return PrtgReport.Failed($"Sensor has failed - an exception was thrown: {exception.Message}");
             }
         }
 
-        private static IPrtgReport GenerateReportFromExceptionMessage(Exception exception)
+        private static string ExtractInnerExceptionsMessages(AggregateException aggregateException)
         {
-            var aggregateException = exception as AggregateException;
+            var innerExceptionMessages = aggregateException
+                .Flatten()
+                .InnerExceptions
+                .Select(exception => exception.Message);
 
-            if (aggregateException != null)
-            {
-                var innerExceptionsMessages = ExtractInnerExceptionsMessages(aggregateException);
-
-                return PrtgReport.Failed($"Sensor has failed - An aggregate exception '{exception.Message}' with following inner exceptions was thrown: {innerExceptionsMessages}");
-            }
-
-            return PrtgReport.Failed($"Sensor has failed - An exception was thrown: {exception.Message}");
+            return string.Join("; ", innerExceptionMessages);
         }
-
-        private static string ExtractInnerExceptionsMessages(AggregateException aggregateException) => aggregateException
-            .Flatten()
-            .InnerExceptions
-            .Aggregate("", (current, innerException) => $"{current}{innerException.Message}; ");
     }
 }
