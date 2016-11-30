@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Xml.Linq;
 
 namespace PrtgSensorSharp
@@ -20,10 +21,27 @@ namespace PrtgSensorSharp
             {
                 return probe();
             }
-            catch (Exception)
+            catch (AggregateException exception)
             {
-                return PrtgReport.Failed("Sensor has failed - unhandled exception was thrown.");
+                var innerExceptionsMessages = ExtractInnerExceptionsMessages(exception);
+
+                return PrtgReport.Failed($"Sensor has failed - an aggregate exception '{exception.Message}' " +
+                                         $"with following inner exceptions was thrown: {innerExceptionsMessages}");
             }
+            catch (Exception exception)
+            {
+                return PrtgReport.Failed($"Sensor has failed - an exception was thrown: {exception.Message}");
+            }
+        }
+
+        private static string ExtractInnerExceptionsMessages(AggregateException aggregateException)
+        {
+            var innerExceptionMessages = aggregateException
+                .Flatten()
+                .InnerExceptions
+                .Select(exception => exception.Message);
+
+            return string.Join("; ", innerExceptionMessages);
         }
     }
 }

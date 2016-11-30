@@ -45,7 +45,26 @@ namespace PrtgSensorSharp.Tests
                 consoleOutput.ReadAll().Should().Be(
                     "<prtg>" +
                         "<error>1</error>" +
-                        "<text>Sensor has failed - unhandled exception was thrown.</text>" +
+                        "<text>Sensor has failed - an exception was thrown: welp!</text>" +
+                    "</prtg>"
+                );
+            }
+        }
+
+        [Test]
+        public void can_print_inner_exceptions_for_AggregateException()
+        {
+            using (var consoleOutput = CapturedConsoleOutput.StartCapturing())
+            {
+                PrtgExeScriptAdvanced.Run(() =>
+                {
+                    throw new AggregateException(new Exception("Exception1"), new Exception("Exception2"));
+                });
+
+                consoleOutput.ReadAll().Should().Be(
+                    "<prtg>" +
+                        "<error>1</error>" +
+                        "<text>Sensor has failed - an aggregate exception 'One or more errors occurred.' with following inner exceptions was thrown: Exception1; Exception2</text>" +
                     "</prtg>"
                 );
             }
