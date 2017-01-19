@@ -32,13 +32,13 @@ namespace PrtgSensorSharp
 
     public class PrtgSuccess : IPrtgReport
     {
-        private readonly IPrtgText _text;
-        private readonly IEnumerable<PrtgResult> _results;
+        public IPrtgText Text { get; }
+        public IEnumerable<PrtgResult> Results { get; }
 
         public PrtgSuccess(IPrtgText text, IEnumerable<PrtgResult> results)
         {
-            _text = text;
-            _results = results;
+            Text = text;
+            Results = results;
         }
 
         public XElement Serialize()
@@ -55,12 +55,12 @@ namespace PrtgSensorSharp
             }
 
             return new XElement("prtg",
-                _results.Select(result => result.Serialize()),
-                _text.Serialize()
+                Results.Select(result => result.Serialize()),
+                Text.Serialize()
             );
         }
 
-        private List<string> GetDuplicateChannels() => _results
+        private List<string> GetDuplicateChannels() => Results
             .GroupBy(result => result.ChannelName)
             .Where(resultGroup => resultGroup.Count() > 1)
             .Select(resultGroup => resultGroup.Key)
@@ -69,15 +69,15 @@ namespace PrtgSensorSharp
 
     public class PrtgFailure : IPrtgReport
     {
-        private readonly IPrtgText _text;
+        public IPrtgText Text { get; }
 
         public PrtgFailure(IPrtgText text)
         {
-            _text = text;
+            Text = text;
         }
 
         public XElement Serialize() => new XElement("prtg",
             new XElement("error", "1"),
-            _text.Serialize());
+            Text.Serialize());
     }
 }

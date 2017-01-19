@@ -13,20 +13,20 @@ namespace PrtgSensorSharp
 
         public static IPrtgText Default => new PrtgDefaultText();
 
-        private readonly string _message;
+        public string Message { get; }
 
         public PrtgText(string message)
         {
-            _message = message;
+            Message = message;
         }
 
         public XElement Serialize() => new XElement("text", ShortenedMessage);
 
         private const int MaximumLength = 2000;
 
-        private string ShortenedMessage => _message.Length > MaximumLength
-            ? _message.Substring(0, MaximumLength - 3) + "..."
-            : _message;
+        private string ShortenedMessage => Message.Length > MaximumLength
+            ? Message.Substring(0, MaximumLength - 3) + "..."
+            : Message;
     }
 
     public class PrtgDefaultText : IPrtgText

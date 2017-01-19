@@ -4,15 +4,15 @@ namespace PrtgSensorSharp
 {
     public class PrtgOptionalChannelProperty
     {
-        private readonly string _name;
-        private readonly string _value;
+        public string Name { get; }
+        public string Value { get; }
 
         public PrtgOptionalChannelProperty(string name, string value)
         {
-            _name = name;
-            _value = value;
+            Name = name;
+            Value = value;
         }
 
-        public XElement Serialize() => new XElement(_name, _value);
+        public XElement Serialize() => new XElement(Name, Value);
     }
 }

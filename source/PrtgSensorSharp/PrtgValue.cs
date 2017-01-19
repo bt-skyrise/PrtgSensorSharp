@@ -15,13 +15,13 @@ namespace PrtgSensorSharp
         public static PrtgValue Float(float value) => new PrtgValue(
             value.ToString(CultureInfo.InvariantCulture));
 
-        private readonly string _value;
+        public string Value { get; }
 
         private PrtgValue(string value)
         {
-            _value = value;
+            Value = value;
         }
 
-        public XElement Serialize() => new XElement("value", _value);
+        public XElement Serialize() => new XElement("value", Value);
     }
 }
