@@ -58,6 +58,7 @@
     <Compile Include="CapturedConsoleOutput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PrtgExeScriptAdvancedSensorTests.cs" />
+    <Compile Include="PrtgOptionalChannelsPropertiesBuilderTests.cs" />
     <Compile Include="PrtgReportTests.cs" />
     <Compile Include="PrtgResultTests.cs" />
     <Compile Include="PrtgTextTests.cs" />
