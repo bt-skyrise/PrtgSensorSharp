@@ -21,7 +21,7 @@ namespace PrtgSensorSharp.Tests
                 
             var result = sut.Build();
 
-            result.Length.ShouldBeEquivalentTo(5);
+            result.Length.Should().Be(5);
 
             result.Should().Contain(p => p.Name == "LimitMode" && p.Value == "1");
             result.Should().Contain(p => p.Name == "LimitMaxError" && p.Value == "100.1");

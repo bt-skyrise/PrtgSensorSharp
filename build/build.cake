@@ -1,75 +1,63 @@
-﻿var target = Argument("target", "Default");
-
-Task("Restore-NuGet-Packages")
-    .Does(() =>
-    {
-        NuGetRestore("../source/PrtgSensorSharp.sln");
-    });
-
-Task("Clean")
-    .Does(() =>
-    {
-        CleanDirectories("../source/**/bin");
-        CleanDirectories("../source/**/obj");
-    });
+var configuration = "Release";
 
 Task("Build")
-    .IsDependentOn("Restore-NuGet-Packages")
-    .IsDependentOn("Clean")
     .Does(() =>
     {
-        MSBuild("../source/PrtgSensorSharp.sln", new MSBuildSettings
+		var solutionPath = "../source";
+
+        DotNetCoreRestore(solutionPath);
+
+        DotNetCoreClean(solutionPath, new DotNetCoreCleanSettings 
         {
-            Configuration = "Release",
-            Verbosity = Verbosity.Quiet
+            Configuration = configuration
+        });
+ 
+        DotNetCoreBuild(solutionPath, new DotNetCoreBuildSettings
+        {
+            Configuration = configuration
         });
     });
 
-Task("Run-Unit-Tests")
+Task("Test")
     .IsDependentOn("Build")
     .Does(() =>
     {
-        NUnit3("../source/PrtgSensorSharp.Tests/bin/Release/PrtgSensorSharp.Tests.dll");
+        var testPath = "../source/PrtgSensorSharp.Tests"; 
+
+		DotNetCoreTest(testPath, new DotNetCoreTestSettings
+        {
+            Configuration = configuration,
+            NoBuild = true,
+            NoRestore = true
+        });
     });
 
-Task("Create-NuGet-Package")
-    .IsDependentOn("Run-Unit-Tests")
+Task("Pack")
+    .IsDependentOn("Test")
     .Does(() =>
-{
-    var nuGetPackSettings = new NuGetPackSettings {
-        Id                      = "PrtgSensorSharp",
-        Version                 = EnvironmentVariable("APPVEYOR_BUILD_VERSION"),
-        Title                   = "PrtgSensorSharp",
-        Authors                 = new[] {"Ryszard Tarajkowski"},
-        Owners                  = new[] {"BT Skyrise"},
-        Description             = "Creating custom PRTG sensors for .NET.",
-        ProjectUrl              = new Uri("https://github.com/bt-skyrise/PrtgSensorSharp"),
-        LicenseUrl              = new Uri("https://github.com/bt-skyrise/PrtgSensorSharp/blob/master/LICENSE.txt"),
-        Copyright               = "Ryszard Tarajkowski 2016",
-        RequireLicenseAcceptance= false,
-        Symbols                 = false,
-        NoPackageAnalysis       = true,
-        Files                   = new[] { new NuSpecContent {Source = "bin/Release/PrtgSensorSharp.dll", Target = "lib/net452"} },
-        BasePath                = "../source/PrtgSensorSharp",
-        OutputDirectory         = "."
-    };
-    
-    NuGetPack(nuGetPackSettings);
-});
+	{
+        CleanDirectories("./artifacts");
 
-Task("Push-NuGet-Package")
-    .IsDependentOn("Create-NuGet-Package")
-    .Does(() =>
-{
-    var package = "./PrtgSensorSharp." + EnvironmentVariable("APPVEYOR_BUILD_VERSION") +".nupkg";
-    
-    NuGetPush(package, new NuGetPushSettings {
-        Source = "https://nuget.org/",
-        ApiKey = EnvironmentVariable("NUGET_API_KEY")
-    });
-});
+        var version = EnvironmentVariable("APPVEYOR_BUILD_VERSION") ?? "1.0.0";
+        var path = "../source/PrtgSensorSharp";
+
+		DotNetCorePack(path, new DotNetCorePackSettings
+        {
+            Configuration = configuration,
+            OutputDirectory = "./artifacts",
+            NoBuild = true,
+            NoRestore = true,
+            ArgumentCustomization = args => {
+                return args
+                    .Append("/p:Version={0} ", version)
+                    .Append("/p:AssemblyVersion={0} ", version)
+                    .Append("/p:FileVersion={0} ", version);
+            }
+        });
+	});
 
 Task("Default")
-    .IsDependentOn("Run-Unit-Tests");
+    .IsDependentOn("Test")
+    .IsDependentOn("Pack");
 
-RunTarget(target);
+RunTarget(Argument("target", "Default"));
